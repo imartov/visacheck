@@ -1,0 +1,22 @@
+# venv
+visacheckvenv
+/visacheckvenv
+visacheckvenv/
+
+# info | tz
+steps.txt
+/steps.txt
+*steps.txt
+
+# audio
+ffmpeg.exe
+/ffmpeg.exe
+*ffmpeg.exe
+ffprobe.exe
+/ffprobe.exe
+*ffprobe.exe
+
+# env
+.env
+/.env
+*.env
