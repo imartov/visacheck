@@ -18,13 +18,21 @@ class ScrapyPage:
         pass
 
     def enter_text_data(self, driver, xpath:str, text:str) -> None:
-        ''' func for enter text data to input field '''
+        ''' method for enter text data to input field '''
         element = driver.find_element(By.XPATH, xpath)
         element.send_keys(Keys.CONTROL, "a")
         wait_random_time(fromm=0.11, to=0.45)
         for letter in text:
             element.send_keys(letter)
             wait_random_time(fromm=0.11, to=0.45)
+
+    def check_displayed_element(self, driver, xpath:str) -> bool:
+        ''' this method is cchecking if element displayed '''
+        try:
+            element = driver.find_element(By.XPATH, xpath).is_displayed()
+            return True
+        except:
+            return False
 
     def find_entry(self):
         ''' main func for scrapy page of visa '''
@@ -150,6 +158,7 @@ class ScrapyPage:
         # TODO: check if element is displayed before every click
         # TODO: check wait time
         # TODO: read security site
+        # TODO: scroll down
 
 
 def main():

@@ -32,18 +32,19 @@ def test_scrapy() -> None:
     driver.get("https://www.django-rest-framework.org/api-guide/permissions/")
     wait_random_time(fromm=1.5, to=2.5)
 
-    main_page = driver.find_element(By.XPATH, "//a[text()='Django REST framework']")
-    main_page.click()
+    scrapy = ScrapyPage()
+    exist = scrapy.check_displayed_element(driver=driver, xpath="//a[text()='Django REST framework False']")
+    print(exist)
 
-    wait_random_time(fromm=1.6, to=2.2)
-    main_page = driver.find_element(By.XPATH, "//a[text()='Installation']")
-    main_page.click()
+    # wait_random_time(fromm=1.6, to=2.2)
+    # main_page = driver.find_element(By.XPATH, "//a[text()='Installation']")
+    # main_page.click()
 
-    wait_random_time(fromm=1.6, to=2.2)
-    main_page = driver.find_element(By.XPATH, "//a[text()='Requirements']")
-    main_page.click()
+    # wait_random_time(fromm=1.6, to=2.2)
+    # main_page = driver.find_element(By.XPATH, "//a[text()='Requirements']")
+    # main_page.click()
 
-    wait_random_time(fromm=20.6, to=30.2)
+    # wait_random_time(fromm=20.6, to=30.2)
 
 def compare(one:str, two:str) -> bool:
     if one == two:
@@ -63,7 +64,7 @@ def check_json() -> None:
 
 
 def main() -> None:
-    check_json()
+    test_scrapy()
     
 if __name__ == "__main__":
     main()
