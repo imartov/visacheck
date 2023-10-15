@@ -1,0 +1,38 @@
+{
+    "minsk": {
+        "center": "//*[@id=\"mat-option-5\"]/span",
+        "center_text": "//span[text()=' Poland Visa Application Center-Minsk ']",
+        "category": "//*[@id=\"mat-option-250\"]/span",
+        "category_text": "//span[text()=' Schengen Visa C ']",
+        "subcategory": "//*[@id=\"mat-option-252\"]/span",
+        "subcategory_text": "//span[text()=' Wiza C Sczenchenskaya ']"
+    },
+    "grodno": {
+        "center": "//*[@id=\"mat-option-3\"]/span",
+        "center_text": "//span[text()=' Poland Visa Application Center-Grodno ']",
+        "category": "//*[@id=\"mat-option-1229\"]/span",
+        "category_text": "//span[text()=' Schengen Visa C ']"
+    },
+    "gomel": {
+        "center": "//*[@id=\"mat-option-2\"]/span",
+        "center_text": "//span[text()=' Poland Visa Application Center-Gomel ']",
+        "category": "//*[@id=\"mat-option-1473\"]/span",
+        "category_text": "//span[text()=' Schengen Visa C ']",
+        "subcategory": "//*[@id=\"mat-option-1475\"]/span",
+        "subcategory_text": "//span[text()=' Wiza C Sczenchenskaya ']"
+    },
+    "lida": {
+        "center": "//*[@id=\"mat-option-4\"]/span",
+        "center_text": "//span[text()=' Poland Visa Application Center-Lida ']",
+        "category": "//*[@id=\"mat-option-1718\"]/span",
+        "category_text": "//span[text()=' Schengen Visa C ']"
+    },
+    "mogilev": {
+        "center": "//*[@id=\"mat-option-6\"]/span",
+        "center_text": "//span[text()=' Poland Visa Application Center-Mogilev ']",
+        "category": "//*[@id=\"mat-option-1962\"]/span",
+        "category_text": "//span[text()=' Schengen Visa C ']",
+        "subcategory": "//*[@id=\"mat-option-1964\"]/span",
+        "subcategory_text": "//span[text()=' Wiza C Sczenchenskaya ']"
+    }
+}

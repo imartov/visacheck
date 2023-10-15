@@ -20,3 +20,9 @@ ffprobe.exe
 .env
 /.env
 *.env
+
+# None
+/None
+None/
+/None/
+None
