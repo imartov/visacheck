@@ -159,6 +159,7 @@ class ScrapyPage:
         # TODO: check wait time
         # TODO: read security site
         # TODO: scroll down
+        # TODO: stealth technologies
 
 
 def main():
