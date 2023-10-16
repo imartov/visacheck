@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from fake_useragent import UserAgent
 from dotenv import load_dotenv
+import undetected_chromedriver as uc
 
 from utils import wait_random_time
 
@@ -41,6 +42,7 @@ class ScrapyPage:
         print("random_ua: ", random_ua)
 
         options = Options()
+        options.headless = False
         # options.add_argument("--headless")  # Remove this if you want to see the browser (Headless makes the chromedriver not have a GUI)
         options.add_argument("--window-size=1920,1080")
         options.add_argument(f'--user-agent={random_ua}')
@@ -48,7 +50,9 @@ class ScrapyPage:
         options.add_argument("--disable-extensions")
         # options.add_argument(f"user-data-dir={os.getenv('DIR_CHROME_PROFILE')}")
 
-        driver = webdriver.Chrome(options=options)
+        driver = uc.Chrome(options=options,
+                           browser_executable_path=os.getenv("PATH_BROWSER"),
+                           driver_executable_path=os.getenv("PATH_DRIVER"))
         solver = RecaptchaSolver(driver=driver)
         load_dotenv()
 
