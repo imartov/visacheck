@@ -9,6 +9,8 @@ from selenium.webdriver.chrome.options import Options
 from fake_useragent import UserAgent
 from dotenv import load_dotenv
 import undetected_chromedriver as uc
+from selenium_stealth import stealth
+from selenium.webdriver.chrome.service import Service
 
 from utils import wait_random_time
 from main import ScrapyPage
@@ -16,6 +18,8 @@ from main import ScrapyPage
 
 def test_scrapy() -> None:
 
+    load_dotenv()
+    # s = Service(executable_path=os.getenv("PATH_DRIVER"))
     ua = UserAgent()
     random_ua = ua.random
     # test_ua = 'Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36'
@@ -25,7 +29,8 @@ def test_scrapy() -> None:
     # options.add_experimental_option("excludeSwitches", ["enable-automation"]) # undetected_chromedriver
     # options.add_experimental_option('useAutomationExtension', False) # undetected_chromedriver
     # options.add_argument("--headless")  # Remove this if you want to see the browser (Headless makes the chromedriver not have a GUI)
-    options.add_argument("--window-size=1920,1080")
+    # options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument(f'--user-agent={random_ua}')
     options.add_argument('--no-sandbox')
     options.add_argument("--disable-extensions")
@@ -34,26 +39,35 @@ def test_scrapy() -> None:
                        browser_executable_path="visacheckvenv\\chrome-win\\chrome.exe",
                        driver_executable_path="visacheckvenv\\chromedriver.exe")
 
-    load_dotenv()
-    driver.get("https://www.django-rest-framework.org/api-guide/permissions/")
-    wait_random_time(fromm=1.5, to=2.5)
+
+    driver.maximize_window()
+
+    driver.get("https://www.django-rest-framework.org/tutorial/quickstart/")
+    wait_random_time(fromm=0.5, to=1.0)
 
     scrapy = ScrapyPage()
     exist = scrapy.check_displayed_element(driver=driver, xpath="//a[text()='Django REST framework False']")
     print(exist)
 
+    driver.implicitly_wait(10)
     exist = driver.find_element(By.XPATH, "//a[text()='Django REST framework']")
     exist.click()
 
+    driver.implicitly_wait(10)
     wait_random_time(fromm=1.6, to=2.2)
     main_page = driver.find_element(By.XPATH, "//a[text()='Installation']")
     main_page.click()
 
+    driver.implicitly_wait(10)
     wait_random_time(fromm=1.6, to=2.2)
     main_page = driver.find_element(By.XPATH, "//a[text()='Requirements']")
     main_page.click()
 
-    # wait_random_time(fromm=20.6, to=30.2)
+    wait_random_time(fromm=5.6, to=10.2)
+
+    driver.quit()
+
+    
 
 
 def solve_captha() -> None:
@@ -64,6 +78,7 @@ def solve_captha() -> None:
     options.headless = False
     # options.add_argument("--headless")  # Remove this if you want to see the browser (Headless makes the chromedriver not have a GUI)
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument(f'--user-agent={random_ua}')
     options.add_argument('--no-sandbox')
     options.add_argument("--disable-extensions")
@@ -79,6 +94,7 @@ def solve_captha() -> None:
     recaptcha_iframe = driver.find_element(By.XPATH, '//iframe[@title="reCAPTCHA"]')
 
     solver.click_recaptcha_v2(iframe=recaptcha_iframe)
+    driver.quit()
 
 def compare(one:str, two:str) -> bool:
     if one == two:
@@ -98,7 +114,7 @@ def check_json() -> None:
 
 
 def main() -> None:
-    solve_captha()
+    test_scrapy()
     
 if __name__ == "__main__":
     main()

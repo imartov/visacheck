@@ -48,6 +48,7 @@ class ScrapyPage:
         options.add_argument(f'--user-agent={random_ua}')
         options.add_argument('--no-sandbox')
         options.add_argument("--disable-extensions")
+        options.add_argument("--disable-blink-features=AutomationControlled")
         # options.add_argument(f"user-data-dir={os.getenv('DIR_CHROME_PROFILE')}")
 
         driver = uc.Chrome(options=options,
@@ -59,7 +60,7 @@ class ScrapyPage:
         # TODO: redirect from google search
         driver.get(os.getenv("URL"))
 
-        wait_random_time(fromm=10.25, to=13.6)
+        wait_random_time(fromm=9.25, to=12.6)
         # TODO: scroll down
         button_accept_cookies = driver.find_element(By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')
         button_accept_cookies.click()
@@ -155,15 +156,16 @@ class ScrapyPage:
             select_citizenship = driver.find_element(By.XPATH, xpaths_visa_select_category_dict["citizenship"]["xpath_text"])
             select_citizenship.click()
 
-            wait_random_time(fromm=20.5, to=30.7)
+            wait_random_time(fromm=5.5, to=10.7)
+            driver.close()
+            driver.quit()
 
         # TODO: screen
         # TODO: shedule run
         # TODO: check if element is displayed before every click
         # TODO: check wait time
-        # TODO: read security site
         # TODO: scroll down
-        # TODO: stealth technologies
+        # TODO: wait click until displayed
 
 
 def main():
