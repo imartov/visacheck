@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import undetected_chromedriver as uc
 from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from utils import wait_random_time
 from main import ScrapyPage
@@ -42,12 +44,15 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://www.django-rest-framework.org/tutorial/quickstart/")
+    driver.get("https://www.google.com/")
     wait_random_time(fromm=0.5, to=1.0)
 
-    scrapy = ScrapyPage()
-    exist = scrapy.check_displayed_element(driver=driver, xpath="//a[text()='Django REST framework False']")
-    print(exist)
+    wait = WebDriverWait(driver, 10)
+
+    element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="APjFqb"]')))
+    element.send_keys(Keys.CONTROL, "a")
+    element.send_keys("this method is cchecking")
+    # sp = ScrapyPage().enter_text_data(driver=driver, text="Any text", xpath='//*[@id="APjFqb"]')
 
     driver.implicitly_wait(10)
     exist = driver.find_element(By.XPATH, "//a[text()='Django REST framework']")
