@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from utils import wait_random_time
+from utils import wait_random_time, get_random_int
 from main import ScrapyPage
 
 
@@ -44,10 +44,15 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://www.google.com/")
+    driver.get("https://www.django-rest-framework.org/")
     wait_random_time(fromm=0.5, to=1.0)
 
     wait = WebDriverWait(driver, 10)
+
+    random_int = get_random_int(1, 10)
+    sp = ScrapyPage()
+    sp.smooth_scroll_dawn(driver=driver, total_height=2000,
+                          step=4)
 
     element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="APjFqb"]')))
     element.send_keys(Keys.CONTROL, "a")

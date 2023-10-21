@@ -1,4 +1,4 @@
-from random import uniform
+from random import uniform, randint
 from datetime import datetime
 from time import sleep
 
@@ -11,11 +11,12 @@ def wait_random_time(fromm:float, to:float) -> None:
     random_wait_time = get_random_wait_time(fromm=fromm, to=to)
     sleep(random_wait_time)
 
+def get_random_int(fromm:int, to:int) -> int:
+    random_int = randint(fromm, to)
+    return random_int
 
 def main():
-    print(datetime.now().time())
-    wait_random_time(fromm=0.99, to=5.25)
-    print(datetime.now().time())
+    pass
 
 if __name__ == "__main__":
     main()
