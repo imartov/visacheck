@@ -3,17 +3,13 @@ from datetime import datetime
 from time import sleep
 
 
-def get_random_wait_time(fromm:float, to:float) -> float:
-    random_wait_time = uniform(fromm, to)
-    return random_wait_time
-
 def wait_random_time(fromm:float, to:float) -> None:
-    random_wait_time = get_random_wait_time(fromm=fromm, to=to)
+    random_wait_time = uniform(fromm, to)
     sleep(random_wait_time)
 
-def get_random_int(fromm:int, to:int) -> int:
-    random_int = randint(fromm, to)
-    return random_int
+def get_random_int(fromm:int, to:int, end=False, driver=False) -> int:
+    to = int(driver.execute_script("return document.body.scrollHeight")) if end else to
+    return randint(fromm, to)
 
 def main():
     pass

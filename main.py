@@ -1,5 +1,6 @@
 import os, json
 from time import sleep
+from random import randint
 
 from selenium_recaptcha_solver import RecaptchaSolver
 from selenium.webdriver.common.by import By
@@ -11,6 +12,7 @@ from dotenv import load_dotenv
 import undetected_chromedriver as uc
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 from utils import wait_random_time, get_random_int
 
@@ -37,7 +39,8 @@ class ScrapyPage:
         except:
             return False
         
-    def smooth_scroll_dawn(self, driver, total_height:int, step:int) -> None:
+    def smooth_scroll_dawn(self, driver, height:int, step:int, end=False) -> None:
+        total_height = int(driver.execute_script("return document.body.scrollHeight")) if end else height
         for i in range(1, total_height, step):
             driver.execute_script("window.scrollTo(0, {});".format(i))
 
@@ -68,7 +71,6 @@ class ScrapyPage:
             driver.get(os.getenv("URL"))
 
             wait_random_time(fromm=9.25, to=12.6)
-            # TODO: scroll down
             button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
             button_accept_cookies.click()
 
@@ -122,7 +124,7 @@ class ScrapyPage:
                 drop_down_list_field_visa_center.click()
 
                 # select visa center
-                # TODO: scroll drop-down list
+                # TODO: scroll drop-down list to Minsk and Mogilev
                 wait_random_time(fromm=0.8, to=1.5)
                 select_visa_center = wait.until(EC.element_to_be_clickable((By.XPATH, visa_data["center_text"])))
                 select_visa_center.click()
@@ -137,7 +139,7 @@ class ScrapyPage:
                 select_visa_category = wait.until(EC.element_to_be_clickable((By.XPATH, visa_data["category_text"])))
                 select_visa_category.click()
                 
-                # TODO: scroll page
+                self.smooth_scroll_dawn(driver=driver, height=0, step=randint(4, 8), end=True)
                 if "subcategory" in visa_data:
                     # click drop-down list select field visa subcategory
                     wait_random_time(fromm=2.5, to=6.5)
@@ -190,6 +192,7 @@ class ScrapyPage:
         # TODO: screen
         # TODO: shedule run
         # TODO: scroll down
+        # TODO: server telegram
 
 
 def main():

@@ -1,5 +1,6 @@
 import json, os
 from time import sleep
+from random import randint
 
 from selenium_recaptcha_solver import RecaptchaSolver
 from selenium.webdriver.common.by import By
@@ -13,6 +14,7 @@ from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 from utils import wait_random_time, get_random_int
 from main import ScrapyPage
@@ -44,15 +46,33 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://www.django-rest-framework.org/")
+    driver.get("https://www.fakturowo.pl/wystaw")
     wait_random_time(fromm=0.5, to=1.0)
 
     wait = WebDriverWait(driver, 10)
 
-    random_int = get_random_int(1, 10)
-    sp = ScrapyPage()
-    sp.smooth_scroll_dawn(driver=driver, total_height=2000,
-                          step=4)
+    document_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-container"]')))
+    document_button.click()
+
+    document_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-container"]')))
+    counter = 1
+    while counter <= 20:
+        if counter % 4 == 0: # scroll every 4 elements or so
+            document_button.send_keys(Keys.ARROW_DOWN)
+        element = WebDriverWait(driver,5,poll_frequency=.2).until(EC.element_to_be_clickable((By.XPATH, "//li[text()='Wezwanie do zapłaty (z odsetkami)']")))
+        # element.click
+        counter += 1
+
+    document_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-container"]')))
+    document_button.click()
+
+    # doc_type = driver.find_element(By.XPATH, "//li[text()='Wezwanie do zapłaty (z odsetkami)']")
+    # actions = ActionChains(driver)
+    # actions.move_to_element(doc_type).perform()
+
+    # doc_type = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-result-ap3e-34"]')))
+    # doc_type.click()
+    wait_random_time(fromm=20.0, to=30.0)
 
     element = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="APjFqb"]')))
     element.send_keys(Keys.CONTROL, "a")
@@ -76,8 +96,6 @@ def test_scrapy() -> None:
     wait_random_time(fromm=5.6, to=10.2)
 
     driver.quit()
-
-    
 
 
 def solve_captha() -> None:
@@ -105,6 +123,7 @@ def solve_captha() -> None:
 
     solver.click_recaptcha_v2(iframe=recaptcha_iframe)
     driver.quit()
+
 
 def compare(one:str, two:str) -> bool:
     if one == two:
