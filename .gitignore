@@ -26,3 +26,9 @@ ffprobe.exe
 None/
 /None/
 None
+
+# folder of screenshots
+/screenshots
+screenshots/
+screenshots
+*screenshots

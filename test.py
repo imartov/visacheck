@@ -46,8 +46,9 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://www.fakturowo.pl/wystaw")
+    driver.get("https://google.com")
     wait_random_time(fromm=0.5, to=1.0)
+    driver.save_screenshot(os.getenv("PATH_SCREEN_FOLDER"))
 
     wait = WebDriverWait(driver, 10)
 

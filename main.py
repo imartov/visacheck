@@ -47,7 +47,6 @@ class ScrapyPage:
     def find_entry(self):
         ''' main func for scrapy page of visa '''
         try:
-            wait = WebDriverWait(driver, 10)
             ua = UserAgent()
             random_ua = ua.random
             print("random_ua: ", random_ua)
@@ -62,13 +61,15 @@ class ScrapyPage:
             options.add_argument("--disable-blink-features=AutomationControlled")
             # options.add_argument(f"user-data-dir={os.getenv('DIR_CHROME_PROFILE')}")
 
-            driver = uc.Chrome(options=options,
-                            browser_executable_path=os.getenv("PATH_BROWSER"),
-                            driver_executable_path=os.getenv("PATH_DRIVER"))
-            solver = RecaptchaSolver(driver=driver)
             load_dotenv()
+            driver = uc.Chrome(browser_executable_path=os.getenv("PATH_BROWSER"),
+                               driver_executable_path=os.getenv("PATH_DRIVER"),
+                               options=options)
+            solver = RecaptchaSolver(driver=driver)
+            wait = WebDriverWait(driver, 10)
 
             driver.get(os.getenv("URL"))
+            driver.maximize_window()
 
             wait_random_time(fromm=9.25, to=12.6)
             button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
@@ -86,17 +87,18 @@ class ScrapyPage:
             # enter login
             wait_random_time(fromm=1.61, to=3.02)
             wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-input-0"]')))
-            self.enter_text_data(self, driver=driver, xpath='//*[@id="mat-input-0"]', text=os.getenv("LOGIN"))
+            self.enter_text_data(driver=driver, xpath='//*[@id="mat-input-0"]', text=os.getenv("LOGIN"))
 
             # enter password
             wait_random_time(fromm=1.23, to=3.34)
             wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-input-1"]')))
-            self.enter_text_data(self, driver=driver, xpath='//*[@id="mat-input-1"]', text=os.getenv("PASSWORD"))
+            self.enter_text_data(driver=driver, xpath='//*[@id="mat-input-1"]', text=os.getenv("PASSWORD"))
 
             # solve captha
             wait_random_time(fromm=1.36, to=2.36)
             recaptcha_iframe = wait.until(EC.element_to_be_clickable((By.XPATH, '//iframe[@title="reCAPTCHA"]')))
             wait_random_time(fromm=3.89, to=5.12)
+            # TODO: recaptha fix if images don't displayed
             solver.click_recaptcha_v2(iframe=recaptcha_iframe)
 
             # click button login
@@ -119,14 +121,14 @@ class ScrapyPage:
 
                 # click drop-down list select field visa center
                 wait_random_time(fromm=2.6, to=4.5)
-                drop_down_list_field_visa_center = driver.find_element(By.XPATH, )
                 drop_down_list_field_visa_center = wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["center_select_field"])))
                 drop_down_list_field_visa_center.click()
 
                 # select visa center
-                # TODO: scroll drop-down list to Minsk and Mogilev
                 wait_random_time(fromm=0.8, to=1.5)
                 select_visa_center = wait.until(EC.element_to_be_clickable((By.XPATH, visa_data["center_text"])))
+                actions = ActionChains(driver)
+                actions.move_to_element(select_visa_center).perform()
                 select_visa_center.click()
 
                 # click drop-down list select field visa category
@@ -139,10 +141,11 @@ class ScrapyPage:
                 select_visa_category = wait.until(EC.element_to_be_clickable((By.XPATH, visa_data["category_text"])))
                 select_visa_category.click()
                 
-                self.smooth_scroll_dawn(driver=driver, height=0, step=randint(4, 8), end=True)
                 if "subcategory" in visa_data:
+                    wait_random_time(fromm=1.0, to=1.5)
+                    self.smooth_scroll_dawn(driver=driver, height=0, step=randint(4, 8), end=True)
                     # click drop-down list select field visa subcategory
-                    wait_random_time(fromm=2.5, to=6.5)
+                    wait_random_time(fromm=2.0, to=3.5)
                     drop_down_list_visa_subcategory = wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["subcategory_select_field"])))
                     drop_down_list_visa_subcategory.click()
 
@@ -154,10 +157,9 @@ class ScrapyPage:
                 # enter birth date
                 wait_random_time(fromm=3.0, to=5.0)
                 wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["birth_date_input_field"])))
-                self.enter_text_data(self,
-                                    driver=driver,
-                                    xpath=xpaths_visa_select_category_dict["birth_date_input_field"],
-                                    text=os.getenv("DATE_BIRTH"))
+                self.enter_text_data(driver=driver,
+                                     xpath=xpaths_visa_select_category_dict["birth_date_input_field"],
+                                     text=os.getenv("DATE_BIRTH"))
 
                 # click drop-down list select field citizenship
                 wait_random_time(fromm=1.0, to=3.0)
@@ -165,10 +167,21 @@ class ScrapyPage:
                 drop_down_list_citizenship.click()
 
                 # select citizenship
-                # TODO: scroll drop-down list
                 wait_random_time(fromm=1.5, to=2.5)
                 select_citizenship = wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["citizenship"]["xpath_text"])))
+                actions = ActionChains(driver)
+                actions.move_to_element(select_citizenship).perform()
                 select_citizenship.click()
+
+                # create screen
+                driver.save_screenshot(os.getenv("PATH_SCREEN_FOLDER"))
+                
+                # TODO: scroll up
+
+                wait_random_time(fromm=20.0, to=30.0)
+
+                driver.close()
+                driver.quit()
 
                 # check if message abot no entry is displaying
                 wait_random_time(fromm=1.0, to=2.0)
@@ -191,12 +204,12 @@ class ScrapyPage:
 
         # TODO: screen
         # TODO: shedule run
-        # TODO: scroll down
         # TODO: server telegram
 
 
 def main():
-    pass
+    sp = ScrapyPage()
+    sp.find_entry()
 
 if __name__ == "__main__":
     main()
