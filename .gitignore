@@ -32,3 +32,10 @@ None
 screenshots/
 screenshots
 *screenshots
+
+# tg
+tgdata
+/tgdata
+tgdata/
+/tgdata/
+*tgdata

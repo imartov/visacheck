@@ -40,6 +40,7 @@ class ScrapyPage:
             return False
         
     def smooth_scroll(self, driver, height:int, step:int, up=False, end=False) -> None:
+        ''' this method is for smooth scroll to bottom or top '''
         total_height = int(driver.execute_script("return document.body.scrollHeight")) if end else height
         if up:
             current_height = driver.execute_script("return window.pageYOffset")
@@ -73,11 +74,11 @@ class ScrapyPage:
             driver = uc.Chrome(browser_executable_path=os.getenv("PATH_BROWSER"),
                                driver_executable_path=os.getenv("PATH_DRIVER"),
                                options=options)
+            driver.maximize_window()
             solver = RecaptchaSolver(driver=driver)
             wait = WebDriverWait(driver, 10)
-
+            
             driver.get(os.getenv("URL"))
-            driver.maximize_window()
 
             wait_random_time(fromm=9.25, to=12.6)
             button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
@@ -182,27 +183,18 @@ class ScrapyPage:
 
                 # create screen
                 driver.save_screenshot(os.getenv("PATH_SCREEN_FOLDER"))
-                
-                # TODO: scroll up
-
-                wait_random_time(fromm=20.0, to=30.0)
-
-                driver.close()
-                driver.quit()
 
                 # check if message abot no entry is displaying
-                wait_random_time(fromm=1.0, to=2.0)
-                no_entry_xpath = self.check_displayed_element(driver=driver,
-                                                        xpath="/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[6]/div")
-                no_entry_text = self.check_displayed_element(driver=driver,
-                                                            xpath="//span[text()=' Приносим извинения, в настоящий момент нет доступных слотов для записи. Пожалуйста, попробуйте позже ']")
-                if no_entry_xpath and no_entry_text:
-                    print("Свободных записей нет")
-                else:
-                    print("Имеются свободные места")
-                
-                driver.close()
-                driver.quit()
+                try:
+                    wait = WebDriverWait(driver, 1)
+                    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[6]/div")))
+                    wait.until(EC.visibility_of_element_located((By.XPATH, "//span[text()=' Приносим извинения, в настоящий момент нет доступных слотов для записи. Пожалуйста, попробуйте позже ']")))
+                    # TODO: do nothing or message tg about no entry
+                except:
+                    # TODO: run tg bot
+                    pass
+                self.smooth_scroll(self, driver=driver, height=600, step=randint(4, 8), up=True)
+
         except Exception as ex:
             print(ex)
             self.exception = True

@@ -14,7 +14,9 @@ from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
+import telebot
+import webbrowser
+from telebot import types
 
 from utils import wait_random_time, get_random_int
 from main import ScrapyPage
@@ -43,21 +45,21 @@ def test_scrapy() -> None:
                        browser_executable_path="visacheckvenv\\chrome-win\\chrome.exe",
                        driver_executable_path="visacheckvenv\\chromedriver.exe")
 
-
     driver.maximize_window()
 
     driver.get("https://www.django-rest-framework.org/")
     wait_random_time(fromm=0.5, to=1.0)
-    
-    sp = ScrapyPage()
-    sp.smooth_scroll(driver=driver, height=2000, step=randint(4, 8))
-    wait_random_time(fromm=2.0, to=3.0)
-    sp.smooth_scroll(driver=driver, height=1000, step=randint(4, 8), up=True)
 
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 2)
 
-    document_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-container"]')))
-    document_button.click()
+    try:
+        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="table-of-contents"]/ul/li[2]/ab')))
+        print("displayed True")
+    except:
+        print("displayed False")
+    finally:
+        driver.close()
+        driver.quit()
 
     document_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="select2-rodzaj-container"]')))
     counter = 1
@@ -99,8 +101,6 @@ def test_scrapy() -> None:
     main_page.click()
 
     wait_random_time(fromm=5.6, to=10.2)
-
-    driver.quit()
 
 
 def solve_captha() -> None:
@@ -147,8 +147,14 @@ def check_json() -> None:
             print(city, "subcategory not exist")
 
 
+def tgbot() -> None:
+    bot = telebot.TeleBot('6241547749:AAHnvFfdq9unR-HxVzzxF2EK5O02DVvsdhY')
+    bot.infinity_polling()
+    bot.send_message(text="test run")
+
+
 def main() -> None:
-    test_scrapy()
+    tgbot()
     
 if __name__ == "__main__":
     main()
