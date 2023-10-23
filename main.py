@@ -39,10 +39,18 @@ class ScrapyPage:
         except:
             return False
         
-    def smooth_scroll_dawn(self, driver, height:int, step:int, end=False) -> None:
+    def smooth_scroll(self, driver, height:int, step:int, up=False, end=False) -> None:
         total_height = int(driver.execute_script("return document.body.scrollHeight")) if end else height
-        for i in range(1, total_height, step):
-            driver.execute_script("window.scrollTo(0, {});".format(i))
+        if up:
+            current_height = driver.execute_script("return window.pageYOffset")
+            init_height = current_height
+            while init_height >= height:
+                driver.execute_script("window.scrollTo({}, {});".format(current_height, init_height))
+                init_height -= step
+        else:
+            for i in range(1, total_height, step):
+                driver.execute_script("window.scrollTo(0, {});".format(i))
+        
 
     def find_entry(self):
         ''' main func for scrapy page of visa '''
@@ -98,7 +106,6 @@ class ScrapyPage:
             wait_random_time(fromm=1.36, to=2.36)
             recaptcha_iframe = wait.until(EC.element_to_be_clickable((By.XPATH, '//iframe[@title="reCAPTCHA"]')))
             wait_random_time(fromm=3.89, to=5.12)
-            # TODO: recaptha fix if images don't displayed
             solver.click_recaptcha_v2(iframe=recaptcha_iframe)
 
             # click button login
@@ -143,7 +150,7 @@ class ScrapyPage:
                 
                 if "subcategory" in visa_data:
                     wait_random_time(fromm=1.0, to=1.5)
-                    self.smooth_scroll_dawn(driver=driver, height=0, step=randint(4, 8), end=True)
+                    self.smooth_scroll(driver=driver, height=0, step=randint(4, 8), end=True)
                     # click drop-down list select field visa subcategory
                     wait_random_time(fromm=2.0, to=3.5)
                     drop_down_list_visa_subcategory = wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["subcategory_select_field"])))
@@ -202,7 +209,6 @@ class ScrapyPage:
             driver.close()
             driver.quit()
 
-        # TODO: screen
         # TODO: shedule run
         # TODO: server telegram
 

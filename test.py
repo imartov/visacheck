@@ -46,9 +46,13 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://google.com")
+    driver.get("https://www.django-rest-framework.org/")
     wait_random_time(fromm=0.5, to=1.0)
-    driver.save_screenshot(os.getenv("PATH_SCREEN_FOLDER"))
+    
+    sp = ScrapyPage()
+    sp.smooth_scroll(driver=driver, height=2000, step=randint(4, 8))
+    wait_random_time(fromm=2.0, to=3.0)
+    sp.smooth_scroll(driver=driver, height=1000, step=randint(4, 8), up=True)
 
     wait = WebDriverWait(driver, 10)
 
