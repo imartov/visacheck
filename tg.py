@@ -1,6 +1,7 @@
 import os, json
 from time import sleep
 import asyncio
+from datetime import datetime
 
 from dotenv import load_dotenv
 import telebot
@@ -29,12 +30,28 @@ def get_chat_id(message):
     with open(os.getenv("TG_CHAT_IDS"), "w", encoding="utf-8") as file:
         chatids = json.dump(chatids, file, indent=4, ensure_ascii=False)
 
-def send_message():
+
+def send_message(city:str, visa_center:str, time=datetime.now(), entry=False) -> None:
+    time = time.strftime()
+    # load_dotenv()
+    bot = telebot.TeleBot(token=os.getenv('TG_ID'))
+    with open(os.getenv("TG_MESS_ENTRY_SUCCESS"), "r", encoding="utf-8") as file:
+        message_success = file.read().format(city=city, visa_center=visa_center, datetime=time)
+    with open(os.getenv("TG_MESS_ENTRY_FAIL"), "r", encoding="utf-8") as file:
+        message_fail = file.read().format(city=city, visa_center=visa_center, datetime=time)
+    text = message_success if entry else message_fail
     with open(os.getenv("TG_CHAT_IDS"), "r", encoding="utf-8") as file:
         chatids = json.load(file)
     for chat_id, username in chatids.items():
-        print(chat_id)
-        bot.send_message(int(chat_id), text="Проверка отправки сообщения")
+        bot.send_message(int(chat_id), text=text)
+
+def send_mess_text(path_to_message:str) -> None:
+    with open(path_to_message, "r", encoding="utf-8") as file:
+        text = file.read()
+    with open(os.getenv("TG_CHAT_IDS"), "r", encoding="utf-8") as file:
+        chatids = json.load(file)
+    for chat_id, username in chatids.items():
+        bot.send_message(int(chat_id), text=text)
 
 
 @bot.message_handler(commands=['chat'])
@@ -42,17 +59,10 @@ def get_chat(message):
     bot.reply_to(message, message.chat)
 
 
-# TODO: main func for sending entry
-# TODO: fix first message
-# TODO: fix json chatids
 # TODO: fix front message and show format of TG_KEY
 
 def main():
-    with open(os.getenv("TG_CHAT_IDS"), "r", encoding="utf-8") as file:
-        chatids = json.load(file)
-    for chat_id, username in chatids.items():
-        bot.send_message(int(chat_id), text="Проверка отправки сообщения")
-    # bot.infinity_polling()
+    send_message(city="Minsk", visa_center="Visa Center Mins")
 
 
 if __name__ == "__main__":

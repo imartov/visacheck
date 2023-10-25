@@ -11,6 +11,9 @@ def get_random_int(fromm:int, to:int, end=False, driver=False) -> int:
     to = int(driver.execute_script("return document.body.scrollHeight")) if end else to
     return randint(fromm, to)
 
+def get_current_time() -> str:
+    return datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+
 def main():
     pass
 

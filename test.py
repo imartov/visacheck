@@ -18,7 +18,7 @@ import telebot
 import webbrowser
 from telebot import types
 
-from utils import wait_random_time, get_random_int
+from utils import *
 from main import ScrapyPage
 
 
@@ -154,7 +154,8 @@ def tgbot() -> None:
 
 
 def main() -> None:
-    tgbot()
+    city = "Minsk"
+    print(f"{city} completed: ", get_current_time())
     
 if __name__ == "__main__":
     main()
