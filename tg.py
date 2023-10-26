@@ -9,6 +9,8 @@ import webbrowser
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
 
+from utils import *
+
 
 load_dotenv()
 bot = telebot.TeleBot(token=os.getenv('TG_ID'))
@@ -31,9 +33,7 @@ def get_chat_id(message):
         chatids = json.dump(chatids, file, indent=4, ensure_ascii=False)
 
 
-def send_message(city:str, visa_center:str, time=datetime.now(), entry=False) -> None:
-    time = time.strftime()
-    # load_dotenv()
+def send_message(city:str, visa_center:str, time=get_current_time(), entry=False) -> None:
     bot = telebot.TeleBot(token=os.getenv('TG_ID'))
     with open(os.getenv("TG_MESS_ENTRY_SUCCESS"), "r", encoding="utf-8") as file:
         message_success = file.read().format(city=city, visa_center=visa_center, datetime=time)

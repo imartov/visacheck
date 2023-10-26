@@ -198,7 +198,7 @@ class ScrapyPage:
                 print("DOM find entry exception")
                 print(ex)
             self.smooth_scroll(self, driver=driver, height=600, step=randint(4, 8), up=True)
-            print(f"{city} completed: ", get_current_time())
+            print(f"{city} completed: ", datetime.now())
 
     # except Exception as ex:
         send_mess_text(path_to_message=os.getenv("TG_MESS_FAIL_SCRIPT"))
