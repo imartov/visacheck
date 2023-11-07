@@ -1,5 +1,5 @@
 {
-    "center_select_field": "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[1]/mat-form-field/div/div[1]/div[3]",
+    "center_select_field": "//*[@id=\"mat-select-0\"]/div/div[2]",
     "category_select_field": "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[2]/mat-form-field/div/div[1]/div[3]",
     "subcategory_select_field": "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[3]/mat-form-field/div/div[1]/div[3]",
     "birth_date_input_field": "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[4]/div[2]/input",

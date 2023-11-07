@@ -47,10 +47,18 @@ def test_scrapy() -> None:
 
     driver.maximize_window()
 
-    driver.get("https://www.django-rest-framework.org/")
+    driver.get("https://selenium-python.readthedocs.io/")
     wait_random_time(fromm=0.5, to=1.0)
 
     wait = WebDriverWait(driver, 2)
+    sp = ScrapyPage()
+    sleep(2)
+    # button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
+    # button_accept_cookies.click()
+    sp.smooth_scroll(driver=driver, height=1000, step=randint(4, 8))
+    sleep(2)
+    sp.smooth_scroll(driver=driver, height=0, step=randint(4, 8), up=True)
+    sleep(5)
 
     try:
         wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="table-of-contents"]/ul/li[2]/ab')))
@@ -154,8 +162,7 @@ def tgbot() -> None:
 
 
 def main() -> None:
-    city = "Minsk"
-    print(f"{city} completed: ", get_current_time())
+    test_scrapy()
     
 if __name__ == "__main__":
     main()
