@@ -14,8 +14,17 @@ def get_random_int(fromm:int, to:int, end=False, driver=False) -> int:
 def get_current_time() -> str:
     return datetime.now().strftime('%d.%m.%Y %H:%M:%S')
 
+def logging(text:str) -> None:
+    current_time = get_current_time()
+    with open("logging.txt", "r", encoding="utf-8") as file:
+        logs = file.read()
+    logs += f"\n\n{current_time}\n{text}"
+    with open("logging.txt", "w", encoding="utf-8") as file:
+        file.write(logs)
+
+
 def main():
-    pass
+    logging(text="test")
 
 if __name__ == "__main__":
     main()

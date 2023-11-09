@@ -18,6 +18,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from utils import *
 from tg import *
 
+load_dotenv()
 
 class ScrapyPage:
     ''' class for scrapy page '''
@@ -85,48 +86,48 @@ class ScrapyPage:
         button_find_entry = wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/app-root/div/div/app-dashboard/section[1]/div/div[2]/div/button')))
         button_find_entry.click()
 
-    def find_entry(self):
+    def init_driver(self) -> object:
+        ua = UserAgent()
+        random_ua = ua.random
+        ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+
+        options = Options()
+        options.headless = False
+        # options.add_argument("--headless")  # Remove this if you want to see the browser (Headless makes the chromedriver not have a GUI)
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument(f'--user-agent={ua}')
+        options.add_argument('--no-sandbox')
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        # options.add_argument('--headless')
+        # options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument('--disable-gpu')
+        # options.add_argument(f"user-data-dir={os.getenv('DIR_CHROME_PROFILE')}")
+
+        
+        driver = uc.Chrome(browser_executable_path=os.getenv("PATH_BROWSER"),
+                            driver_executable_path=os.getenv("PATH_DRIVER"),
+                            options=options)
+        driver.maximize_window()
+        driver.get(os.getenv("URL"))
+        wait_random_time(fromm=8.0, to=10.0)
+        wait = WebDriverWait(driver, 10)
+        # accept cookies
+        button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
+        button_accept_cookies.click()
+        return driver
+    
+    def find_entry(self, driver:object) -> None:
         ''' main func for scrapy page of visa '''
-        print("Start: ", get_current_time())     
-        try:
-            ua = UserAgent()
-            random_ua = ua.random
-            ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-
-            options = Options()
-            options.headless = False
-            # options.add_argument("--headless")  # Remove this if you want to see the browser (Headless makes the chromedriver not have a GUI)
-            options.add_argument("--window-size=1920,1080")
-            options.add_argument(f'--user-agent={ua}')
-            options.add_argument('--no-sandbox')
-            options.add_argument("--disable-extensions")
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            # options.add_argument(f"user-data-dir={os.getenv('DIR_CHROME_PROFILE')}")
-
-            load_dotenv()
-            driver = uc.Chrome(browser_executable_path=os.getenv("PATH_BROWSER"),
-                                driver_executable_path=os.getenv("PATH_DRIVER"),
-                                options=options)
-            
-            driver.maximize_window()
-            wait = WebDriverWait(driver, 10)
-            driver.get(os.getenv("URL"))
-
-            # accept cookies
-            wait_random_time(fromm=9.25, to=12.6)
-            button_accept_cookies = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')))
-            button_accept_cookies.click()
-            
-            with open("xpaths_visa_select_category.json", "r", encoding="utf-8") as file:
+        send_mess_text(path_to_message="tgdata\\messages\\run_bot.txt")
+        with open("xpaths_visa_select_category.json", "r", encoding="utf-8") as file:
                     xpaths_visa_select_category_dict = json.load(file)
-            
-            with open("xpaths_visa_type.json", "r", encoding="utf-8") as file:
-                xpaths_visa_type_dict = json.load(file)
-            
+        with open("xpaths_visa_type.json", "r", encoding="utf-8") as file:
+            xpaths_visa_type_dict = json.load(file)
+        wait = WebDriverWait(driver, 10)
+        try:
             while not self.exception:
-                self.login_recaptha(driver=driver)
                 for city, visa_data in xpaths_visa_type_dict.items():
-
                     # click drop-down list select field visa center
                     wait_random_time(fromm=2.6, to=4.5)
                     drop_down_list_field_visa_center = wait.until(EC.element_to_be_clickable((By.XPATH, xpaths_visa_select_category_dict["center_select_field"])))
@@ -191,31 +192,50 @@ class ScrapyPage:
                     # check if message abot no entry is displaying
                     try:
                         wait = WebDriverWait(driver, 1)
-                        wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[6]/div")))
-                        # wait.until(EC.visibility_of_element_located((By.XPATH, "//span[text()=' Приносим извинения, в настоящий момент нет доступных слотов для записи. Пожалуйста, попробуйте позже ']")))
-                        # send_message(city=city, visa_center=visa_data["center_text"][15:-2])
+                        # wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[6]/div")))
+                        wait.until(EC.visibility_of_element_located((By.XPATH, "//div[text()=' Приносим извинения, в настоящий момент нет доступных слотов для записи. Пожалуйста, попробуйте позже ']")))
+                        # send_message(city=city, visa_center=visa_data["center_text"][15:-2], time=get_current_time())
                     except Exception as ex:
                         send_message(city=city, visa_center=visa_data["center_text"][15:-2], time=get_current_time(), entry=True)
-                        print("DOM find entry exception")
-                        print(ex)
+
+                    text_log = f"City: {city} - comlpeted, time: {get_current_time()}"
+                    logging(text=text_log)
+
                     self.smooth_scroll(driver=driver, height=randint(30, 60), step=randint(4, 8), up=True)
-                    print(f"{city} completed: ", datetime.now())
-                wait_random_time(fromm=120.0, to=240.0)
-                driver.refresh()
-                wait_random_time(fromm=1.5, to=3.0)
+                # driver.refresh()
+                wait_random_time(fromm=400.0, to=700.0)
 
         except Exception as ex:
             send_mess_text(path_to_message=os.getenv("TG_MESS_FAIL_SCRIPT"))
             self.exception = True
-            print("Running script exception")
-            print(ex)
+            with open("debug.txt", "w", encoding="utf-8") as file:
+                file.write(str(ex))
             driver.close()
             driver.quit()
+
+    def run_bot(self, driver:object) -> None:
+        try:
+            self.login_recaptha(driver=driver)
+        except Exception as ex:
+            self.exception = True
+            logging(text=str(ex))
+            send_mess_text(path_to_message="tgdata\\messages\\stop_run.txt")
+        if self.exception:
+            wait_random_time(fromm=1200.0, to=2400)
+            self.run_bot(driver=driver)
+        else:
+            try:
+                self.find_entry(driver=driver)
+            except Exception as ex:
+                driver.refresh()
+                wait_random_time(fromm=8.0, to=10.0)
+                self.run_bot(driver=driver)
 
 
 def main():
     sp = ScrapyPage()
-    sp.find_entry()
+    driver = sp.init_driver()
+    sp.run_bot(driver=driver)
 
 if __name__ == "__main__":
     main()
